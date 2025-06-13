@@ -1,22 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "OneBid - prowizja",
-  "description": "Umozliwia automatyczne uwzglednienie prowizji podczas licytacji.",
+  "name": "XTB Tools",
+  "description": "-",
   "version": "1.0",
   "action": {
-    "default_title": "Ustawienia",
+    "default_title": "Settings",
     "default_popup": "settings.html"
   },
   "icons": { 
-    "64": "Resources/Icon-64.png"
   },
   "content_scripts": [
     {
       "matches": [
-        "*://onebid.pl/pl/live/*",
-        "*://*.onebid.pl/pl/live/*",
-        "file://*.html",
-        "*://onebid.pl/pl/*"
+        "*://xstation5.xtb.com/*"
       ],
       "js": [
         "content.js", "messageUtils.js"
