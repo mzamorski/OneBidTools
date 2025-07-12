@@ -95,29 +95,29 @@ function findProfitBox(container) {
 	return null;
 }
 
-function waitForElementInside(container, selector, timeout = 10000) {
-    console.log(`Czekam na element "${selector}" w kontenerze...`);
+// function waitForElementInside(container, selector, timeout = 10000) {
+//     console.log(`Czekam na element "${selector}" w kontenerze...`);
 
-    return new Promise((resolve, reject) => {
-        const element = container.querySelector(selector);
-        if (element) return resolve(element);
+//     return new Promise((resolve, reject) => {
+//         const element = container.querySelector(selector);
+//         if (element) return resolve(element);
 
-        const observer = new MutationObserver(() => {
-            const el = container.querySelector(selector);
-            if (el) {
-                observer.disconnect();
-                resolve(el);
-            }
-        });
+//         const observer = new MutationObserver(() => {
+//             const el = container.querySelector(selector);
+//             if (el) {
+//                 observer.disconnect();
+//                 resolve(el);
+//             }
+//         });
 
-        observer.observe(container, { childList: true, subtree: true });
+//         observer.observe(container, { childList: true, subtree: true });
 
-        setTimeout(() => {
-            observer.disconnect();
-            reject(new Error(`Element "${selector}" nie pojawił się w czasie ${timeout} ms`));
-        }, timeout);
-    });
-}
+//         setTimeout(() => {
+//             observer.disconnect();
+//             reject(new Error(`Element "${selector}" nie pojawił się w czasie ${timeout} ms`));
+//         }, timeout);
+//     });
+// }
 
 
 // ------------------------------------------------------------------------------------------------------------------------ //
@@ -129,86 +129,138 @@ console.log(settings.appFullName + " has started.");
 
 
 window.onload = function () {
-    waitForPortfolioSummary().then(container => {
+    waitForPortfolioTrades().then(container => {
         console.log("Container: " . container)
         globals.portfolioContainer = container; 
         console.log("Portfolio trades window is ready.");
 
-        apply();        
+        apply(container);        
     }).catch(error => {
         console.error("Błąd podczas oczekiwania na kontener:", error);
     });
-    
 };
 
-function apply() {
-    console.log("Apply..");
 
+function hideRows() {
+    console.debug("hideRows()");
+    const rows = document.querySelectorAll("div.slick-row");
 
-    console.log("Globals: " . globals.portfolioContainer);
-
-    //const openTradesPanel = document.querySelector('div[open-trades-module] .jspContainer');
-    // const openTradesPanel = globals.portfolioContainer;
-    // console.log(openTradesPanel);
-
-
-    // const rows = openTradesPanel.querySelectorAll('.slick-row.slick-group');
-    // console.log("Rows: " . rows);
+    let hiddenCount = 0;
 
     // rows.forEach(row => {
-    //     console.log('Znaleziony element:', row);
+
+
+
+    //     if (row.innerText.includes("Akcje")) {
+    //         //row.style.display = "none";
+    //         row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
+            
+    //         console.log("Ukryto wiersz zawierający 'Akcje':", row);
+    //     }
+    // });
+
+    rows.forEach(row => {
+        console.debug("Row: ", row);
+
+        const isMainRow = row.classList.contains('slick-group');
+        if (!isMainRow) {          
+            const rowNo = row.getAttribute('row');  
+            console.log(" > ", rowNo)
+            return;
+        }
+
+        const assetTypeNode = row.querySelector("span.xs-btn-asset-class");
+        const assetType = assetTypeNode.textContent.trim();
+        console.log("Type: ", assetType)
+
+
+        //const x = row.querySelector("span.slick-group-title");
+        const assetInfo = row.querySelector("span.slick-group-title > div");
+
+        // 1. Nazwa akcji – tylko tekst spoza spanów (czyli czysty tekstowy node)
+        const assetName = Array.from(assetInfo.childNodes)
+        .filter(n => n.nodeType === Node.TEXT_NODE)
+        .map(n => n.textContent.trim())
+        .join('');
+
+        // 2. Ilość – zawartość .slick-group-rectangle
+        const amount = assetInfo.querySelector('.slick-group-rectangle')?.textContent.trim() ?? '';
+
+        // 3. Opis – zawartość .slick-group-toggle-description
+        const description = assetInfo.querySelector('.slick-group-toggle-description')?.textContent.trim() ?? '';
+
+        console.log('Nazwa:', assetName);      // Apple
+        console.log('Ilość:', amount);          // 2
+        console.log('Opis:', description);      // AAPL.US, Apple Inc
+
         
+        
+        return;
+
+
+//         const x = row.querySelector('.slick-group-toggle-description')?.title.split(',')[0];
+//         if (!x) return;
+
+
+//         const assetTicker = row.querySelector('.slick-group-toggle-description')?.title.split(',')[0];
+//         if (!assetTicker) return;
+        
+//         console.log("assetTicker: ", assetTicker);
+
+//         if (assetTicker !== "GOLD") return;
+
+
+        
+
+// row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
+
+//         const assetType = row.querySelector(".xs-btn-asset-class");
+//         if (!assetType) return;
+
+        
+//         const text = assetType.textContent.trim();
+//         console.log("hideMatchingRows: ", text);
+
+//         if (text == "Akcje") {
+//             //row.style.display = "none";
+//             row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
+//             hiddenCount++;
+//         }
+    });
+
+    console.log(`[content.js] Ukryto ${hiddenCount} rzędów`);
+}
+
+function apply(container) {
+    console.log("Apply..");
+
+    // const observer = new MutationObserver(() => {
+    //     console.log("[content.js] Zmiana w DOM — stosuję filtry");
+
+    //     hideRows();
+
     // });
 
 
-        // const observer = new MutationObserver((mutationsList, observer) => {
-        //     console.log("Start")
+    const observer = new MutationObserver(mutations => {
+        console.log("Zmiana drzewa DOM.");
 
-        //     for (const mutation of mutationsList) {
-        //         if (mutation.type === 'childList') {
-        //             console.log("Wykryto zmianę w dzieciach:", mutation);
-        //             // Możesz dodać własną logikę np. odświeżenie widoku
-        //         }
-        //         if (mutation.type === 'attributes') {
-        //             console.log("Zmieniono atrybut:", mutation.attributeName);
-        //         }
-        //     }
-        // });
+        for (const mutation of mutations) {
 
-        // // Konfiguracja obserwatora
-        // observer.observe(openTradesPanel, {
-        //     childList: true,        // śledź dodawanie/usuwanie elementów
-        //     subtree: true,          // śledź zmiany także w potomnych elementach
-        //     attributes: true        // śledź zmiany atrybutów
-        // });
+            console.debug("Mutation: ", mutation);
 
-        // console.log("MutationObserver uruchomiony.");
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    
+                    hideRows();
+                }
+            }
+        }
+    });
 
-    // const wc = globals.portfolioContainer.querySelector('xs6-balance-summary');
-    // if (!wc) {
-    //     console.error("Nie znaleziono komponentu xs6-balance-summary.");
-    //     return;
-    // }
 
-    // const shadow = wc.shadowRoot;
-    // if (!shadow) {
-    //     console.error("Brak dostępu do shadowRoot.");
-    //     return;
-    // }
 
-    // waitForElementInside(shadow, '.profit-box')
-    //     .then(profitBox => {
-    //         console.log("profit-box znaleziony:", profitBox);
+    console.debug("Watching: ", container);
 
-    //         const label = profitBox.querySelector('label.profit');
-    //         if (label) {
-    //             label.textContent = 'Zysk: 666 PLN';
-    //             console.log('Zmieniono tekst w profit-box.');
-    //         } else {
-    //             console.log("Nie znaleziono label.profit w środku profit-box.");
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error("Błąd:", error.message);
-    //     });
+    observer.observe(container, { childList: true, subtree: true });
 }
