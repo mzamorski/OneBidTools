@@ -140,107 +140,74 @@ window.onload = function () {
     });
 };
 
+function parseNumberOrDefault(value, defaultValue = 0) {
+    if (value == null) return defaultValue;
 
-function hideRows() {
-    console.debug("hideRows()");
+    const str = String(value).replace(',', '.').trim();
+    const num = parseFloat(str);
+
+    return isNaN(num) ? defaultValue : num;
+}
+
+function handleRows() {
     const rows = document.querySelectorAll("div.slick-row");
 
-    let hiddenCount = 0;
-
-    // rows.forEach(row => {
-
-
-
-    //     if (row.innerText.includes("Akcje")) {
-    //         //row.style.display = "none";
-    //         row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
-            
-    //         console.log("Ukryto wiersz zawierający 'Akcje':", row);
-    //     }
-    // });
+    let markNextChildren = false;
+    
 
     rows.forEach(row => {
-        console.debug("Row: ", row);
+        //console.debug("Row: ", row);
 
-        const isMainRow = row.classList.contains('slick-group');
-        if (!isMainRow) {          
-            const rowNo = row.getAttribute('row');  
-            console.log(" > ", rowNo)
-            return;
+        let markRow = false;
+
+        //row.style.display = null;
+        //row.style.backgroundColor = null;
+
+        const isParentRow = row.classList.contains('slick-group');
+
+        // Parent row
+        if (isParentRow) {      
+            const rowInfo = AssetRowInfo.fromRow(row);
+            console.debug("RowInfo: ", rowInfo);
+            
+            markNextChildren = false;
+
+            if (rowInfo.assetType !== "CFD") {
+                return;
+            }
+
+            markRow = true;
+
+            if (rowInfo.isExpanded) {
+                console.log(`${rowInfo.name}: Kolejne wiersze wymagają oznaczenia.`)
+                markNextChildren = true;
+
+                // if (parseNumberOrDefault(amount) > 0) {
+                //     markNextChildren = true;
+                // }
+            }
+            else {
+                markNextChildren = false;
+            }
         }
+        // // Childrens
+        // else {
+        //     console.log(`Wiersz dziecka (${markNextChildren})`);
 
-        const assetTypeNode = row.querySelector("span.xs-btn-asset-class");
-        const assetType = assetTypeNode.textContent.trim();
-        console.log("Type: ", assetType)
+        //     if (markNextChildren) {
+        //         row.classList.add('highlight-row');
+        //     }
+        // }
 
-
-        //const x = row.querySelector("span.slick-group-title");
-        const assetInfo = row.querySelector("span.slick-group-title > div");
-
-        // 1. Nazwa akcji – tylko tekst spoza spanów (czyli czysty tekstowy node)
-        const assetName = Array.from(assetInfo.childNodes)
-        .filter(n => n.nodeType === Node.TEXT_NODE)
-        .map(n => n.textContent.trim())
-        .join('');
-
-        // 2. Ilość – zawartość .slick-group-rectangle
-        const amount = assetInfo.querySelector('.slick-group-rectangle')?.textContent.trim() ?? '';
-
-        // 3. Opis – zawartość .slick-group-toggle-description
-        const description = assetInfo.querySelector('.slick-group-toggle-description')?.textContent.trim() ?? '';
-
-        console.log('Nazwa:', assetName);      // Apple
-        console.log('Ilość:', amount);          // 2
-        console.log('Opis:', description);      // AAPL.US, Apple Inc
-
-        
-        
-        return;
-
-
-//         const x = row.querySelector('.slick-group-toggle-description')?.title.split(',')[0];
-//         if (!x) return;
-
-
-//         const assetTicker = row.querySelector('.slick-group-toggle-description')?.title.split(',')[0];
-//         if (!assetTicker) return;
-        
-//         console.log("assetTicker: ", assetTicker);
-
-//         if (assetTicker !== "GOLD") return;
-
-
-        
-
-// row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
-
-//         const assetType = row.querySelector(".xs-btn-asset-class");
-//         if (!assetType) return;
-
-        
-//         const text = assetType.textContent.trim();
-//         console.log("hideMatchingRows: ", text);
-
-//         if (text == "Akcje") {
-//             //row.style.display = "none";
-//             row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
-//             hiddenCount++;
-//         }
+        // Główna akcja na wierszu (jeśli klasyfikuje się)
+        if (markRow || markNextChildren) {
+            row.classList.add('highlight-row');
+        }
     });
-
-    console.log(`[content.js] Ukryto ${hiddenCount} rzędów`);
 }
 
 function apply(container) {
     console.log("Apply..");
-
-    // const observer = new MutationObserver(() => {
-    //     console.log("[content.js] Zmiana w DOM — stosuję filtry");
-
-    //     hideRows();
-
-    // });
-
 
     const observer = new MutationObserver(mutations => {
         console.log("Zmiana drzewa DOM.");
@@ -252,7 +219,7 @@ function apply(container) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     
-                    hideRows();
+                    handleRows();
                 }
             }
         }

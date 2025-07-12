@@ -14,8 +14,9 @@
       "matches": [
         "*://xstation5.xtb.com/*"
       ],
+      "css": ["styles.css"],
       "js": [
-        "content.js", "messageUtils.js"
+        "Models/assetRowInfo.js", "content.js", "messageUtils.js"
       ],
       "run_at": "document_end"
     }
