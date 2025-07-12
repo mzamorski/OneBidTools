@@ -1,8 +1,21 @@
-div.slick-row.highlight-row {
+.highlight-row {
   background-color: rgba(255, 255, 0, 0.15) !important;
 }
 
-div.slick-row.highlight-row:hover,
-div.slick-row.highlight-row:focus {
+/* .highlight-row:hover,
+.highlight-row:focus {
   opacity: 0.1;
+} */
+
+
+.lowlight-row {
+  background-color: rgba(0, 0, 0, 0.05);
+  opacity: 0.2;
+  pointer-events: none;
+  user-select: none;
 }
+
+.hidden-row {
+  display: none !important;
+}
+

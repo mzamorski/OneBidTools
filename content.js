@@ -38,7 +38,7 @@ function waitForPortfolioTrades() {
 
     return new Promise((resolve, reject) => {
         const checkExist = setInterval(() => {
-            const container = document.querySelector('div[open-trades-module] .jspContainer');
+            const container = document.querySelector('div[open-trades-module] .jspPane:has(.slick-row)');
             if (container) {
 				console.log("Portfolio trades window found.");
 
@@ -120,13 +120,21 @@ function findProfitBox(container) {
 // }
 
 
+// (function () {
+//     const originalLog = console.log;
+//     console.log = function (...args) {
+//         const now = new Date();
+//         const time = now.toLocaleTimeString('pl-PL', { hour12: false }) + '.' + now.getMilliseconds().toString().padStart(3, '0');
+//         originalLog.call(console, `[${time}]`, ...args);
+//     };
+// })();
+
+
 // ------------------------------------------------------------------------------------------------------------------------ //
 //  MAIN
 // ------------------------------------------------------------------------------------------------------------------------ //
 
 console.log(settings.appFullName + " has started.");
-
-
 
 window.onload = function () {
     waitForPortfolioTrades().then(container => {
@@ -149,9 +157,10 @@ function parseNumberOrDefault(value, defaultValue = 0) {
     return isNaN(num) ? defaultValue : num;
 }
 
-function handleRows() {
-    const rows = document.querySelectorAll("div.slick-row");
-
+function handleRows(container) {
+    const rows = container.querySelectorAll("div.slick-row");
+    //console.debug("Rows: ", rows)
+    
     let markNextChildren = false;
     
 
@@ -197,7 +206,10 @@ function handleRows() {
         if (markRow || markNextChildren) {
             console.log("Mark current row.")
 
-            row.classList.add('highlight-row');
+            //row.classList.add('highlight-row');
+            row.classList.add('lowlight-row');
+            //row.classList.add('hidden-row');
+            //row.remove();
         }
     });
 }
@@ -207,23 +219,8 @@ function apply(container) {
 
     const observer = new MutationObserver(mutations => {
         console.log("Zmiana drzewa DOM.");
-
-        handleRows();
-
-        // for (const mutation of mutations) {
-
-        //     console.debug("Mutation: ", mutation);
-
-        //     for (const node of mutation.addedNodes) {
-        //         if (node.nodeType === Node.ELEMENT_NODE) {
-                    
-        //             handleRows();
-        //         }
-        //     }
-        // }
+        handleRows(container);
     });
-
-
 
     console.debug("Watching: ", container);
 
