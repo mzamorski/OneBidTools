@@ -1,5 +1,6 @@
 class AssetRowInfo {
-    constructor(assetType, isExpanded, assetName, amount, description) {
+    constructor(isParent, assetType, isExpanded, assetName, amount, description) {
+        this.isParent = isParent;
         this.assetType = assetType;
         this.isExpanded = isExpanded;
         this.name = assetName;
@@ -8,28 +9,30 @@ class AssetRowInfo {
     }
 
     static fromRow(row) {
-        const assetTypeNode = row.querySelector("span.xs-btn-asset-class");
-        const assetType = assetTypeNode ? assetTypeNode.textContent.trim() : '';
+        let assetType = '', isExpanded = false, assetName = '', amount = '', description = '';
 
-        const toggleNode = row.querySelector('span.slick-group-toggle');
-        const isExpanded = toggleNode?.classList.contains('expanded') || false;
+        const isParentRow = row.classList.contains('slick-group');
+        if (isParentRow) {
+            const assetTypeNode = row.querySelector("span.xs-btn-asset-class");
+            assetType = assetTypeNode ? assetTypeNode.textContent.trim() : '';
 
-        const assetInfoNode = row.querySelector("span.slick-group-title > div");
+            const toggleNode = row.querySelector('span.slick-group-toggle');
+            isExpanded = toggleNode?.classList.contains('expanded') || false;
 
-        // Nazwa akcji – tylko tekst spoza spanów (czyli czysty tekstowy node)
-        const assetName = assetInfoNode
-            ? Array.from(assetInfoNode.childNodes)
-                .filter(n => n.nodeType === Node.TEXT_NODE)
-                .map(n => n.textContent.trim())
-                .join('')
-            : '';
+            const assetInfoNode = row.querySelector("span.slick-group-title > div");
 
-        // Ilość – zawartość .slick-group-rectangle
-        const amount = assetInfoNode?.querySelector('.slick-group-rectangle')?.textContent.trim() ?? '';
+            // Nazwa akcji – tylko tekst spoza spanów (czyli czysty tekstowy node)
+            assetName = assetInfoNode
+                ? Array.from(assetInfoNode.childNodes)
+                    .filter(n => n.nodeType === Node.TEXT_NODE)
+                    .map(n => n.textContent.trim())
+                    .join('')
+                : '';
+            
+            amount = assetInfoNode?.querySelector('.slick-group-rectangle')?.textContent.trim() ?? '';
+            description = assetInfoNode?.querySelector('.slick-group-toggle-description')?.textContent.trim() ?? '';
+        }
 
-        // Opis – zawartość .slick-group-toggle-description
-        const description = assetInfoNode?.querySelector('.slick-group-toggle-description')?.textContent.trim() ?? '';
-
-        return new AssetRowInfo(assetType, isExpanded, assetName, amount, description);
+        return new AssetRowInfo(isParentRow, assetType, isExpanded, assetName, amount, description);
     }
 }

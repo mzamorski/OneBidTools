@@ -160,16 +160,11 @@ function handleRows() {
 
         let markRow = false;
 
-        //row.style.display = null;
-        //row.style.backgroundColor = null;
-
-        const isParentRow = row.classList.contains('slick-group');
+        const rowInfo = AssetRowInfo.fromRow(row);
+        //console.debug("RowInfo: ", rowInfo);
 
         // Parent row
-        if (isParentRow) {      
-            const rowInfo = AssetRowInfo.fromRow(row);
-            console.debug("RowInfo: ", rowInfo);
-            
+        if (rowInfo.isParent) {      
             markNextChildren = false;
 
             if (rowInfo.assetType !== "CFD") {
@@ -179,7 +174,6 @@ function handleRows() {
             markRow = true;
 
             if (rowInfo.isExpanded) {
-                console.log(`${rowInfo.name}: Kolejne wiersze wymagają oznaczenia.`)
                 markNextChildren = true;
 
                 // if (parseNumberOrDefault(amount) > 0) {
@@ -201,6 +195,8 @@ function handleRows() {
 
         // Główna akcja na wierszu (jeśli klasyfikuje się)
         if (markRow || markNextChildren) {
+            console.log("Mark current row.")
+
             row.classList.add('highlight-row');
         }
     });
@@ -212,17 +208,19 @@ function apply(container) {
     const observer = new MutationObserver(mutations => {
         console.log("Zmiana drzewa DOM.");
 
-        for (const mutation of mutations) {
+        handleRows();
 
-            console.debug("Mutation: ", mutation);
+        // for (const mutation of mutations) {
 
-            for (const node of mutation.addedNodes) {
-                if (node.nodeType === Node.ELEMENT_NODE) {
+        //     console.debug("Mutation: ", mutation);
+
+        //     for (const node of mutation.addedNodes) {
+        //         if (node.nodeType === Node.ELEMENT_NODE) {
                     
-                    handleRows();
-                }
-            }
-        }
+        //             handleRows();
+        //         }
+        //     }
+        // }
     });
 
 
