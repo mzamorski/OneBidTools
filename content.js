@@ -124,15 +124,9 @@ function findProfitBox(container) {
 }
 
 function createRowFilter(name) {
-    switch (name) {
-        case 'Cfd': return new CfdRowFilter();
-        case 'Stock': return new StockRowFilter();
-        case 'Name_Custom': return new AssetNameFilter(["Microsoft", "AAVE"]);
-        default: return new EmptyRowFilter();
-    }
+    return RowFilterFactory.create(name);
 }
 
-// Fabryka markerów
 function createRowMarker(name) {
     return RowMarkerFactory.create(name)
 }
@@ -200,14 +194,6 @@ function handleRows(container) {
                 }
             }
         }
-        // // Childrens
-        // else {
-        //     console.log(`Wiersz dziecka (${markNextChildren})`);
-
-        //     if (markNextChildren) {
-        //         row.classList.add('highlight-row');
-        //     }
-        // }
 
         // Główna akcja na wierszu (jeśli klasyfikuje się)
         if (markRow || markNextChildren) {

@@ -74,7 +74,7 @@ class RowMarkerFactory {
             case 'Empty':
                 return new EmptyRowMarker();
             default:
-                console.warn(`Nieznany typ markera: "${type}". Zwracam EmptyMarker.`);
+                console.warn(`Nieznany typ markera: "${type}". Zwracam pusty.`);
                 return new EmptyRowMarker();
         }
     }

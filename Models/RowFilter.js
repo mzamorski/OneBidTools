@@ -58,3 +58,21 @@ class OrFilter extends RowFilter {
         return this.filters.some(f => f.matches(rowInfo));
     }
 }
+
+
+class RowFilterFactory {
+    static create(type) {
+        switch (type) {
+            case 'Cfd': return new CfdRowFilter();
+            case 'Stock': return new StockRowFilter();
+            case 'Name_Custom': return new AssetNameFilter(["Microsoft", "AAVE"]);
+            case 'None':
+            case 'Empty':
+                return new EmptyRowFilter();
+            default:
+                console.warn(`Nieznany typ filtra: "${type}". Zwracam pusty.`);
+                return new EmptyRowFilter();
+        }
+    }
+}
+
