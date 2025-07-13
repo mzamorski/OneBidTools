@@ -16,7 +16,7 @@ class StockRowFilter {
     }
 }
 
-class AssetNameFilter extends RowFilter {
+class AssetNameRowFilter extends RowFilter {
     constructor(substrings) {
         super();
         this.substrings = Array.isArray(substrings) ? substrings : [substrings];
@@ -37,7 +37,7 @@ class EmptyRowFilter extends RowFilter {
 
 // ------------------------------------------------------------------------------------------------------------------------
 
-class AndFilter extends RowFilter {
+class AndRowFilter extends RowFilter {
     constructor(...filters) {
         super();
         this.filters = filters;
@@ -48,7 +48,7 @@ class AndFilter extends RowFilter {
     }
 }
 
-class OrFilter extends RowFilter {
+class OrRowFilter extends RowFilter {
     constructor(...filters) {
         super();
         this.filters = filters;
@@ -58,21 +58,3 @@ class OrFilter extends RowFilter {
         return this.filters.some(f => f.matches(rowInfo));
     }
 }
-
-
-class RowFilterFactory {
-    static create(type) {
-        switch (type) {
-            case 'Cfd': return new CfdRowFilter();
-            case 'Stock': return new StockRowFilter();
-            case 'Name_Custom': return new AssetNameFilter(["Microsoft", "AAVE"]);
-            case 'None':
-            case 'Empty':
-                return new EmptyRowFilter();
-            default:
-                console.warn(`Nieznany typ filtra: "${type}". Zwracam pusty.`);
-                return new EmptyRowFilter();
-        }
-    }
-}
-

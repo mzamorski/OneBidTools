@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8" />
   <style>
-    body { font-family: sans-serif; padding: 10px; }
-    select, button { margin: 5px 0; width: 100%; }
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+    }
+
+    select,
+    button {
+      margin: 5px 0;
+      width: 100%;
+    }
   </style>
 </head>
-<body>
-  <label for="filter-select">Wybierz filtr:</label>
-  <select id="filter-select">
-    <option value="Cfd">CFD</option>
-    <option value="Stock">Akcje</option>
-    <option value="Name_Custom">Użytkownika 1</option>
-  </select>
 
-  <label for="marker-select">Wybierz marker:</label>
-  <select id="marker-select">
-    <option value="Highlight">Podświetl</option>
-    <option value="Lowlight">Przyciemnij</option>
-    <option value="Grayed">Wyszarz</option>
-    <option value="Hidden">Ukryj</option>
-    <option value="Empty">Brak</option>
-  </select>
+<body>
+  <label for="filter-select">Filtr wierszy:</label>
+  <select id="filter-select"></select>
+
+  <label for="marker-select">Styl oznaczenia:</label>
+  <select id="marker-select"></select>
 
   <button id="save-button">Zapisz ustawienia</button>
 
+  <script src="Models/RowFilterType.js"></script>
+  <script src="Models/RowMarkerType.js"></script>
   <script src="settings.js"></script>
 </body>
+
 </html>

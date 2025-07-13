@@ -18,21 +18,21 @@ class EmptyRowMarker extends RowMarker {
     }
 }
 
-class HighlightMarker extends RowMarker {
+class HighlightRowMarker extends RowMarker {
     apply(row) {
         row.style.setProperty('background-color', 'rgba(255, 255, 0, 0.15)', 'important');
         row.style.setProperty('opacity', '1');
     }
 }
 
-class LowlightMarker extends RowMarker {
+class LowlightRowMarker extends RowMarker {
     apply(row) {
         row.style.setProperty('background-color', 'rgba(0, 0, 0, 0.05)', 'important');
         row.style.setProperty('opacity', '0.2');
     }
 }
 
-class GrayedMarker extends RowMarker {
+class GrayedRowMarker extends RowMarker {
     apply(row) {
         row.style.setProperty('background-color', 'rgba(0, 0, 0, 0.05)', 'important');
         row.style.setProperty('opacity', '0.2');
@@ -53,29 +53,8 @@ class GrayedMarker extends RowMarker {
     }
 }
 
-class HiddenMarker extends RowMarker {
+class HiddenRowMarker extends RowMarker {
     apply(row) {
         row.style.setProperty('display', 'none');
-    }
-}
-
-class RowMarkerFactory {
-    static create(type) {
-        switch (type) {
-            case 'Highlight':
-                return new HighlightMarker();
-            case 'Lowlight':
-                return new LowlightMarker();
-            case 'Grayed':
-                return new GrayedMarker();                
-            case 'Hidden':
-                return new HiddenMarker();
-            case 'None':
-            case 'Empty':
-                return new EmptyRowMarker();
-            default:
-                console.warn(`Nieznany typ markera: "${type}". Zwracam pusty.`);
-                return new EmptyRowMarker();
-        }
     }
 }

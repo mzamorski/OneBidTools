@@ -16,7 +16,8 @@
       ],
       "css": ["styles.css"],
       "js": [
-        "Models/AssetRowInfo.js", "Models/RowMarker.js", "Models/RowFilter.js", "content.js", "messageUtils.js"
+        "Models/AssetRowInfo.js", "Models/RowMarkerType.js", "Models/RowMarker.js", "Models/RowFilterType.js", "Models/RowFilter.js", 
+        "content.js", "messageUtils.js"
       ],
       "run_at": "document_start"
     }

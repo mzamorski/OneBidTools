@@ -12,18 +12,8 @@ let globals = {
 	profitContainer: null
 }
 
-
-// const selectedMarkerType = settings.rowMarkerType;
-// const rowMarker = RowMarkerFactory.create('grayed');
-// const rowFilter = new AssetNameFilter(["Microsoft", "AAVE"]);
-// const rowFilter = new OrFilter(
-//     new StockRowFilter(),
-//     new AssetNameFilter(["Microsoft", "AAVE"])
-// );
-
-let rowFilter = new CfdRowFilter();
-let rowMarker = new GrayedMarker();
-
+let rowFilter = createRowFilter();
+let rowMarker = createRowMarker();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -35,10 +25,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         rowFilter = createRowFilter(message.selectedFilter);
         rowMarker = createRowMarker(message.selectedMarker);
 
-        handleRows(container);
+        handleRows(globals.portfolioContainer);
     }
 });
-
 
 function waitForPortfolioSummary() {
 	console.log("Waiting for portfolio window...");
@@ -159,6 +148,8 @@ function parseNumberOrDefault(value, defaultValue = 0) {
 }
 
 function handleRows(container) {
+    //console.debug("Handled container: ", container);
+
     const rows = container.querySelectorAll("div.slick-row");
     //console.debug("Rows: ", rows)
 
