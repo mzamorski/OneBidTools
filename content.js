@@ -129,6 +129,41 @@ function findProfitBox(container) {
 //     };
 // })();
 
+class RowMarker {
+    apply(row) {
+        throw new Error("Not implemented");
+    }
+
+    clear(row) {
+        row.style.backgroundColor = '';
+        row.style.opacity = '';
+        row.style.display = '';
+
+        // row.style.removeProperty('background-color');
+        // row.style.removeProperty('opacity');
+        // row.style.removeProperty('display');
+    }
+}
+
+class HighlightMarker extends RowMarker {
+    apply(row) {
+        row.style.backgroundColor = 'rgba(255, 255, 0, 0.15)';
+        row.style.opacity = '1';
+    }
+}
+
+class LowlightMarker extends RowMarker {
+    apply(row) {
+        row.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+        row.style.opacity = '0.2';
+    }
+}
+
+class HiddenMarker extends RowMarker {
+    apply(row) {
+        row.style.display = 'none';
+    }
+}
 
 // ------------------------------------------------------------------------------------------------------------------------ //
 //  MAIN
@@ -157,15 +192,22 @@ function parseNumberOrDefault(value, defaultValue = 0) {
     return isNaN(num) ? defaultValue : num;
 }
 
+const rowMarker = new LowlightMarker();
+
 function handleRows(container) {
     const rows = container.querySelectorAll("div.slick-row");
     //console.debug("Rows: ", rows)
     
+    
+
     let markNextChildren = false;
     
 
     rows.forEach(row => {
         //console.debug("Row: ", row);
+
+        // Wymagane czyszczenie by nowo dodane wiersze (np. rozwinięcie grupy wyżej) nie miały błędnie oznaczonego stylu.
+        rowMarker.clear(row);
 
         let markRow = false;
 
@@ -206,10 +248,7 @@ function handleRows(container) {
         if (markRow || markNextChildren) {
             console.log("Mark current row.")
 
-            //row.classList.add('highlight-row');
-            row.classList.add('lowlight-row');
-            //row.classList.add('hidden-row');
-            //row.remove();
+            rowMarker.apply(row);
         }
     });
 }

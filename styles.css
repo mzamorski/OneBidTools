@@ -16,6 +16,8 @@
 }
 
 .hidden-row {
-  display: none !important;
+  /* display: none !important;  */
+
+  visibility: hidden !important;
 }
 
