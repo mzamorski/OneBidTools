@@ -3,7 +3,7 @@ class AssetRowInfo {
         this.isParent = isParent;
         this.assetType = assetType;
         this.isExpanded = isExpanded;
-        this.name = assetName;
+        this.assetName = assetName;
         this.amount = amount;
         this.description = description;
     }
