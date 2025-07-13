@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  
-  <link rel="stylesheet" href="settings.css">
-    
+  <meta charset="UTF-8" />
   <style>
-    body {
-      background-color: #27292b;
-    }
+    body { font-family: sans-serif; padding: 10px; }
+    select, button { margin: 5px 0; width: 100%; }
   </style>
-<script type="text/javascript" src="settings.js"></script>  
-<script type="text/javascript" src="messageUtils.js"></script>
 </head>
 <body>
-  <div>
-    <label class="switch">
-      <input type="checkbox" id="enableExtension" />
-      <span class="slider round"></span>
-    </label>
-  </div>
-  <hr class="solid">
-  <div>
-    
-    <input type="range" id="amountRange" min="0" max="30" />
-    <input type="number" id="amountValue" min="0" max="30" />
+  <label for="filter-select">Wybierz filtr:</label>
+  <select id="filter-select">
+    <option value="Cfd">CFD</option>
+    <option value="Stock">Akcje</option>
+    <option value="Name_Custom">Użytkownika 1</option>
+  </select>
 
-    <input type="checkbox" id="hideBasePrice" />
+  <label for="marker-select">Wybierz marker:</label>
+  <select id="marker-select">
+    <option value="Highlight">Podświetl</option>
+    <option value="Lowlight">Przyciemnij</option>
+    <option value="Grayed">Wyszarz</option>
+    <option value="Hidden">Ukryj</option>
+    <option value="Empty">Brak</option>
+  </select>
 
-  </div>
-  
+  <button id="save-button">Zapisz ustawienia</button>
+
+  <script src="settings.js"></script>
 </body>
 </html>

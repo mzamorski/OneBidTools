@@ -29,6 +29,12 @@ class AssetNameFilter extends RowFilter {
     }
 }
 
+class EmptyRowFilter extends RowFilter {
+    matches(rowInfo) {
+        return true;
+    }
+}
+
 // ------------------------------------------------------------------------------------------------------------------------
 
 class AndFilter extends RowFilter {

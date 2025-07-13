@@ -12,6 +12,34 @@ let globals = {
 	profitContainer: null
 }
 
+
+// const selectedMarkerType = settings.rowMarkerType;
+// const rowMarker = RowMarkerFactory.create('grayed');
+// const rowFilter = new AssetNameFilter(["Microsoft", "AAVE"]);
+// const rowFilter = new OrFilter(
+//     new StockRowFilter(),
+//     new AssetNameFilter(["Microsoft", "AAVE"])
+// );
+
+let rowFilter = new CfdRowFilter();
+let rowMarker = new GrayedMarker();
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+    console.debug("Message: ", message);
+
+    if (message.type === 'settingsChanged') {
+        console.log("Otrzymano aktualizację ustawień:", message.selectedFilter, message.selectedMarker);
+
+        rowFilter = createRowFilter(message.selectedFilter);
+        rowMarker = createRowMarker(message.selectedMarker);
+
+        handleRows(container);
+    }
+});
+
+
 function waitForPortfolioSummary() {
 	console.log("Waiting for portfolio window...");
 
@@ -95,39 +123,19 @@ function findProfitBox(container) {
 	return null;
 }
 
-// function waitForElementInside(container, selector, timeout = 10000) {
-//     console.log(`Czekam na element "${selector}" w kontenerze...`);
+function createRowFilter(name) {
+    switch (name) {
+        case 'Cfd': return new CfdRowFilter();
+        case 'Stock': return new StockRowFilter();
+        case 'Name_Custom': return new AssetNameFilter(["Microsoft", "AAVE"]);
+        default: return new EmptyRowFilter();
+    }
+}
 
-//     return new Promise((resolve, reject) => {
-//         const element = container.querySelector(selector);
-//         if (element) return resolve(element);
-
-//         const observer = new MutationObserver(() => {
-//             const el = container.querySelector(selector);
-//             if (el) {
-//                 observer.disconnect();
-//                 resolve(el);
-//             }
-//         });
-
-//         observer.observe(container, { childList: true, subtree: true });
-
-//         setTimeout(() => {
-//             observer.disconnect();
-//             reject(new Error(`Element "${selector}" nie pojawił się w czasie ${timeout} ms`));
-//         }, timeout);
-//     });
-// }
-
-
-// (function () {
-//     const originalLog = console.log;
-//     console.log = function (...args) {
-//         const now = new Date();
-//         const time = now.toLocaleTimeString('pl-PL', { hour12: false }) + '.' + now.getMilliseconds().toString().padStart(3, '0');
-//         originalLog.call(console, `[${time}]`, ...args);
-//     };
-// })();
+// Fabryka markerów
+function createRowMarker(name) {
+    return RowMarkerFactory.create(name)
+}
 
 // ------------------------------------------------------------------------------------------------------------------------ //
 //  MAIN
@@ -156,22 +164,11 @@ function parseNumberOrDefault(value, defaultValue = 0) {
     return isNaN(num) ? defaultValue : num;
 }
 
-// const selectedMarkerType = settings.rowMarkerType;
-const rowMarker = RowMarkerFactory.create('grayed');
-//const rowFilter = new AssetNameFilter(["Microsoft", "AAVE"]);
-const rowFilter = new OrFilter(
-    new StockRowFilter(),
-    new AssetNameFilter(["Microsoft", "AAVE"])
-);
-
 function handleRows(container) {
     const rows = container.querySelectorAll("div.slick-row");
     //console.debug("Rows: ", rows)
-    
-    
 
     let markNextChildren = false;
-    
 
     rows.forEach(row => {
         //console.debug("Row: ", row);

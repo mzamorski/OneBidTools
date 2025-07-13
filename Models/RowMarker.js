@@ -10,7 +10,7 @@ class RowMarker {
     }
 }
 
-class EmptyMarker extends RowMarker {
+class EmptyRowMarker extends RowMarker {
     apply(row) {
     }
 
@@ -62,20 +62,20 @@ class HiddenMarker extends RowMarker {
 class RowMarkerFactory {
     static create(type) {
         switch (type) {
-            case 'highlight':
+            case 'Highlight':
                 return new HighlightMarker();
-            case 'lowlight':
+            case 'Lowlight':
                 return new LowlightMarker();
-            case 'grayed':
+            case 'Grayed':
                 return new GrayedMarker();                
-            case 'hidden':
+            case 'Hidden':
                 return new HiddenMarker();
-            case 'none':
-            case 'empty':
-                return new EmptyMarker();
+            case 'None':
+            case 'Empty':
+                return new EmptyRowMarker();
             default:
                 console.warn(`Nieznany typ markera: "${type}". Zwracam EmptyMarker.`);
-                return new EmptyMarker();
+                return new EmptyRowMarker();
         }
     }
 }
